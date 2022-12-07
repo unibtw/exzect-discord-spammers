@@ -32,7 +32,10 @@ def give_token():
 	for i in range(0,count):
 		with open('tokens.txt') as fp:
 			lines = fp.readlines()
-			newtoken = lines[i].split(":")[2]
+			if data['token_type'] == '1':
+				newtoken = lines[i]
+			elif data['token_type'] == '2':
+				newtoken = lines[i].split(":")[2]
 	print('Взял токен ' + newtoken)
 	return newtoken
 

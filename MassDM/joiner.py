@@ -114,16 +114,11 @@ def hack_load_banner(inviter, serverid, token):
             "Referrer-Policy": "strict-origin-when-cross-origin"
         }
         response = requests.get(f"https://discord.com/api/v9/guilds/{serverid}/member-verification?with_guild=false&invite_code={inviter}", headers=headers, proxies=lines)
-        print(response)
         next_data = response.json()
-        print(next_data)
         # next_data["form_fields"][0]["response"] = True
-
         a = requests.put('https://discord.com/api/v9/guilds/' + serverid + '/requests/@me', json=next_data, headers=headers, proxies=lines)
-        print(a)
-        print(a.text)
         if a.status_code == 201:
-            print('[+] Обошёл баннер сервера' + serverid + '! [' + token + ']')
+            print('[+] Обошёл баннер сервера ' + serverid + '! [' + token + ']')
         else:
             print(f"[-] Дискорд забанил твой айпи. Юзай ВПН. Ошибка: {a.text}" + ' [' + token + ']')
     except Exception as e:
@@ -151,6 +146,8 @@ def join(invite, token):
             print(f'Ошибка 403 ({token[:36]}*****)')
         elif response4.status_code == 400:
             print(f"[CAPTCHA] ({token[:36]}*****)")
+            print(response4.text)
+            #json2 = {'captcha_key': captcha_bypass(token, "https://discord.com", f"{response4.json()['captcha_sitekey']}"), 'nonce': snakeflow, 'tts': "false"}
             json2 = {'captcha_key': captcha_bypass(token, "https://discord.com", f"{response4.json()['captcha_sitekey']}", response4.json()['captcha_rqdata']), 'captcha_rqtoken': response4.json()['captcha_rqtoken'], 'nonce': snakeflow, 'tts': "false"}
             response5 = requests.post("https://discordapp.com/api/v9/invites/" + str(invite), headers=headers, cookies=request_cookie(), json=js.dumps(json2), proxies=lines, timeout=20)
             if response5.status_code == 200:

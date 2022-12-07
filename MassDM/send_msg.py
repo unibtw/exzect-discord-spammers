@@ -87,6 +87,7 @@ def open_channel(authorization, userID):
 	headers['authorization'] = authorization
 	headers['x-context-properties'] = "e30="
 	response3 = requests.post("https://discord.com/api/v9/users/@me/channels", headers=headers, cookies=request_cookie(), json=json_data, proxies=liner).json()
+	print('Открыл лс ' + response3["id"])
 	channel = response3["id"]
 	return channel
 
@@ -129,6 +130,8 @@ def send_message(authorization, channel, msg, userID):
 		print(f'ЛС Закрыт {userID} ({authorization[:36]}*****)')
 	elif response4.status_code == 400:
 		print(f"[CAPTCHA] ({authorization[:36]}*****)")
+		print(response4.text)
+		#json2 = {'captcha_key': captcha_bypass(authorization, "https://discord.com", f"{response4.json()['captcha_sitekey']}"), 'content': msg, 'nonce': snakeflow, 'tts': "false"}
 		json2 = {'captcha_key': captcha_bypass(authorization, "https://discord.com", f"{response4.json()['captcha_sitekey']}", response4.json()['captcha_rqdata']), 'captcha_rqtoken': response4.json()['captcha_rqtoken'], 'content': msg, 'nonce': snakeflow, 'tts': "false"}
 		response5 = requests.post("https://discord.com/api/v9/channels/" + str(channel) + "/messages", headers=headers, cookies=request_cookie(), data=js.dumps(json2).replace("<user>", f"<@{userID}>").replace("<id>", f"{userID}"), proxies=liner, timeout=20)
 		if response5.status_code == 200:
