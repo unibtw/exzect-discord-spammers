@@ -36,7 +36,7 @@ def give_token():
 				newtoken = lines[i]
 			elif data['token_type'] == '2':
 				newtoken = lines[i].split(":")[2]
-	print('Взял токен ' + newtoken)
+	print(f'Взял токен {newtoken[:36]}*****')
 	return newtoken
 
 

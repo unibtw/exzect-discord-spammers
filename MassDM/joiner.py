@@ -118,12 +118,12 @@ def hack_load_banner(inviter, serverid, token):
         # next_data["form_fields"][0]["response"] = True
         a = requests.put('https://discord.com/api/v9/guilds/' + serverid + '/requests/@me', json=next_data, headers=headers, proxies=lines)
         if a.status_code == 201:
-            print('[+] Обошёл баннер сервера ' + serverid + '! [' + token + ']')
+            print('[+] Обошёл баннер сервера ' + serverid + '! [' + token[:36] + '*****]')
         else:
-            print(f"[-] Дискорд забанил твой айпи. Юзай ВПН. Ошибка: {a.text}" + ' [' + token + ']')
+            print(f"[-] Дискорд забанил твой айпи. Юзай ВПН. Ошибка: {a.text}" + ' [' + token[:36] + '*****]')
     except Exception as e:
         try:
-            print("[-] Cloudfare забанил твой айпи. Юзай ВПН. Ошибка: " + {str(e)} + ' [' + token + ']')
+            print("[-] Cloudfare забанил твой айпи. Юзай ВПН. Ошибка: " + {str(e)} + ' [' + token[:36] + '*****]')
         finally:
             e = None
             del e
@@ -138,7 +138,7 @@ def join(invite, token):
         headers['referer'] = "https://discordapp.com/api/v9/invites/" + str(invite)
         response4 = requests.post(('https://discordapp.com/api/v9/invites/' + invite), headers=headers, json=js.dumps(jsoner), cookies=request_cookie(), proxies=lines)
         if response4.status_code == 200:
-            print('[+] Зашёл на сервер ' + invite + '! [' + token[:36] + ']')
+            print('[+] Зашёл на сервер ' + invite + '! [' + token[:36] + '*****]')
             if data["loadbanner"] == "true":
                 print('Обхожу баннер сервера!')
                 hack_load_banner(inviter, data['server_id'], token)
