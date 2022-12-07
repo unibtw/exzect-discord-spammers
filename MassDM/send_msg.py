@@ -32,7 +32,7 @@ with open ('proxy.txt', 'r') as file:
 proxyip = proxer.split(":")[0]
 proxyport = proxer.split(":")[1]
 liner = {
-    'http': lines
+    'http': proxer
 }
 
 headers = {
@@ -129,7 +129,7 @@ def send_message(authorization, channel, msg, userID):
 		print(f'ЛС Закрыт {userID} ({authorization[:36]}*****)')
 	elif response4.status_code == 400:
 		print(f"[CAPTCHA] ({authorization[:36]}*****)")
-		json2 = {'captcha_key': captcha_bypass(authorization, "https://discord.com", f"{response4.json()['captcha_sitekey']}", response4.json()['captcha_rqdata']), 'captcha_rqtoken': response4.json()['captcha_rqtoken'], 'content': msg["content"], 'nonce': snakeflow, 'tts': "false"}
+		json2 = {'captcha_key': captcha_bypass(authorization, "https://discord.com", f"{response4.json()['captcha_sitekey']}", response4.json()['captcha_rqdata']), 'captcha_rqtoken': response4.json()['captcha_rqtoken'], 'content': msg, 'nonce': snakeflow, 'tts': "false"}
 		response5 = requests.post("https://discord.com/api/v9/channels/" + str(channel) + "/messages", headers=headers, cookies=request_cookie(), data=js.dumps(json2).replace("<user>", f"<@{userID}>").replace("<id>", f"{userID}"), proxies=liner, timeout=20)
 		if response5.status_code == 200:
 			print(f'Успешно {userID} ({authorization[:36]}*****)')
