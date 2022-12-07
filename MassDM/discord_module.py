@@ -25,6 +25,9 @@ inviter = args['invite']
 timouter = args['timeout']
 powerrange1 = int(args['range1'])
 powerrange2 = int(args['range2'])
+with open(os.path.join("config.json"), "r", encoding="utf8") as r_f:
+    data = json.loads(r_f.read())
+
 def give_token():
 	for i in range(0,count):
 		with open('tokens.txt') as fp:
@@ -64,42 +67,41 @@ take = give_token()
 
 # guild parser 
 while count == oldcount:
+	with open("Users.txt", "r") as mab:
+		userw = json.load(mab)
 	with open("Users.txt", "r") as r_f:
 		userss1 = r_f.readlines()
 	if not userss1:
-		# users_x = [member for member in get_members(args["server_id"], args["channel_id"])]
-		# print(users_x)
-		# with open("Users.txt", "w") as w_f:
-		# 	json.dump(users_x, w_f)
-		# 	w_f.close()
 		print('У вас пустой файл Users.txt!')
 		break
 	else:
 		z = ["0"]
 		n_sps=""
 		for g in range(powerrange1, powerrange2):
-			with open('Users.txt') as fp:
-				userss = fp.readlines()
-				newuser2 = userss[g]
-			print('Взял пользователя ' + newuser2)
-			os.system(f"python send_msg.py -id {int(newuser2)} -t {take}")
-			print('Сплю ' +args["timeout"]+' секунд')
-			time.sleep(int(args["timeout"]))
-			
-			# z.append(users_c[i])
-			# for lst in z[1:]:
-			# 	n_sps=n_sps+lst[0]+lst[1]+lst[2]+lst[3]+lst[4]+lst[5]+lst[6]+lst[7]+lst[8]+lst[9]+lst[10]+lst[11]+lst[12]+lst[13]+lst[14]+lst[15]+lst[16]+lst[17]
-			# 	print(n_sps)
-			# 	os.system(f"python send_msg.py -id {n_sps} -t {take}")
-			# 	n_sps = ""
-			# 	z = ["0"]
-			# 	print('Сплю ' +args["timeout"]+' секунд')
-			# 	time.sleep(int(args["timeout"]))
+			if data['type'] == '1':
+				with open('Users.txt') as fp:
+					userss = fp.readlines()
+					newuser2 = userss[g]
+				print('Взял пользователя ' + newuser2)
+				os.system(f"python send_msg.py -id {int(newuser2)} -t {take}")
+				print('Сплю ' +args["timeout"]+' секунд')
+				time.sleep(int(args["timeout"]))
+			elif data['type'] == '2':
+				z.append(userw[g])
+				for lst in z[1:]:
+					n_sps=n_sps+lst[0]+lst[1]+lst[2]+lst[3]+lst[4]+lst[5]+lst[6]+lst[7]+lst[8]+lst[9]+lst[10]+lst[11]+lst[12]+lst[13]+lst[14]+lst[15]+lst[16]+lst[17]
+					print('Взял пользователя ' + n_sps)
+					os.system(f"python send_msg.py -id {n_sps} -t {take}")
+					n_sps = ""
+					z = ["0"]
+					print('Сплю ' +args["timeout"]+' секунд')
+					time.sleep(int(args["timeout"]))
 		print('Закончил отправлять сообщения пользователям!')
 		count+=1
-		# old = powerrange2 - powerrange1
-		# powerrange1 += old
-		# powerrange2 += old
+		if data['type'] == '2':
+			old = powerrange2 - powerrange1
+			powerrange1 += old
+			powerrange2 += old
 		if oldcount != count:
 			oldcount +=1
 		take = give_token()

@@ -117,7 +117,7 @@ def hack_load_banner(inviter, serverid, token):
         print(response)
         next_data = response.json()
         print(next_data)
-        next_data["form_fields"][0]["response"] = True
+        # next_data["form_fields"][0]["response"] = True
 
         a = requests.put('https://discord.com/api/v9/guilds/' + serverid + '/requests/@me', json=next_data, headers=headers, proxies=lines)
         print(a)

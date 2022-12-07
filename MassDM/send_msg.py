@@ -143,8 +143,9 @@ def send_message(authorization, channel, msg, userID):
 
 send_message(tokener, channel, text_to_send, idder)		
 
-with open('Users.txt', 'w') as f:
-	for line in userss:
-		result = pattern.search(line)
-		if result is None:
-			f.write(line) 
+if data['type'] == '1':
+	with open('Users.txt', 'w') as f:
+		for line in userss:
+			result = pattern.search(line)
+			if result is None:
+				f.write(line) 
