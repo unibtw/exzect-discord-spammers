@@ -107,6 +107,17 @@ def captcha_bypass(token, url, key, captcha_rqdata):
 	print(f"[{timestampStr}] [CAPTCHA SOLVED] ({response[-32:]}) ({token[:36]}*****)")
 	return response	
 
+def captcha_bypass2(token, url, key):
+	capmonster = HCaptchaTask(data['capmonster_apikey'])
+	capmonster.set_user_agent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) discord/0.0.16 Chrome/91.0.4472.164 Electron/13.4.0 Safari/537.36")
+	task_id = capmonster.create_task(url, key, is_invisible=True)
+	result = capmonster.join_task_result(task_id)
+	response = result.get("gRecaptchaResponse")
+	dateTimeObj = datetime.datetime.now()
+	timestampStr = dateTimeObj.strftime("%H:%M:%S")
+	print(f"[{timestampStr}] [CAPTCHA SOLVED] ({response[-32:]}) ({token[:36]}*****)")
+	return response	     	
+
 channel = open_channel(tokener, idder)
 # bot = discum.Client(token=args["token"], proxy_host=proxyip, proxy_port=proxyport)
 pattern = re.compile(re.escape(args["indeficator"]))	
@@ -129,18 +140,24 @@ def send_message(authorization, channel, msg, userID):
 	elif response4.status_code == 403:
 		print(f'ЛС Закрыт {userID} ({authorization[:36]}*****)')
 	elif response4.status_code == 400:
-		print(f"[CAPTCHA] ({authorization[:36]}*****)")
-		print(response4.text)
-		#json2 = {'captcha_key': captcha_bypass(authorization, "https://discord.com", f"{response4.json()['captcha_sitekey']}"), 'content': msg, 'nonce': snakeflow, 'tts': "false"}
-		json2 = {'captcha_key': captcha_bypass(authorization, "https://discord.com", f"{response4.json()['captcha_sitekey']}", response4.json()['captcha_rqdata']), 'captcha_rqtoken': response4.json()['captcha_rqtoken'], 'content': msg, 'nonce': snakeflow, 'tts': "false"}
-		response5 = requests.post("https://discord.com/api/v9/channels/" + str(channel) + "/messages", headers=headers, cookies=request_cookie(), data=js.dumps(json2).replace("<user>", f"<@{userID}>").replace("<id>", f"{userID}"), proxies=liner, timeout=20)
-		if response5.status_code == 200:
-			print(f'Успешно {userID} ({authorization[:36]}*****)')
-		elif response5.status_code == 403:
-			print(f'ЛС Закрыт {userID} ({authorization[:36]}*****)')
+		if "captcha_rqdata" in response4.text:
+			print(f"[CAPTCHA] ({authorization[:36]}*****)")
+			print(response4.text)
+			json2 = {'captcha_key': captcha_bypass(authorization, "https://discord.com", f"{response4.json()['captcha_sitekey']}", response4.json()['captcha_rqdata']), 'captcha_rqtoken': response4.json()['captcha_rqtoken'], 'content': msg, 'nonce': snakeflow, 'tts': "false"}
+			response5 = requests.post("https://discord.com/api/v9/channels/" + str(channel) + "/messages", headers=headers, cookies=request_cookie(), data=js.dumps(json2).replace("<user>", f"<@{userID}>").replace("<id>", f"{userID}"), proxies=liner, timeout=20)
+			if response5.status_code == 200:
+				print(f'Успешно {userID} ({authorization[:36]}*****)')
+			elif response5.status_code == 403:
+				print(f'ЛС Закрыт {userID} ({authorization[:36]}*****)')
 		else:
-			print(f"[{timestampStr}] [ERROR] {userID} ({authorization[:36]}*****) ({response5.text})")
-
+			print(f"[CAPTCHA] ({authorization[:36]}*****)")
+			print(response4.text)
+			json2 = {'captcha_key': captcha_bypass2(authorization, "https://discord.com", f"{response4.json()['captcha_sitekey']}"), 'content': msg, 'nonce': snakeflow, 'tts': "false"}
+			response5 = requests.post("https://discord.com/api/v9/channels/" + str(channel) + "/messages", headers=headers, cookies=request_cookie(), data=js.dumps(json2).replace("<user>", f"<@{userID}>").replace("<id>", f"{userID}"), proxies=liner, timeout=20)
+			if response5.status_code == 200:
+				print(f'Успешно {userID} ({authorization[:36]}*****)')
+			elif response5.status_code == 403:
+				print(f'ЛС Закрыт {userID} ({authorization[:36]}*****)')
 	else:
 		print(f"[{timestampStr}] [ERROR] {userID} ({authorization[:36]}*****) ({response4.text})")
 

@@ -92,6 +92,17 @@ def captcha_bypass(token, url, key, captcha_rqdata):
 	print(f"[{timestampStr}] [CAPTCHA SOLVED] ({response[-32:]}) ({token[:36]}*****)")
 	return response	     
 
+def captcha_bypass2(token, url, key):
+	capmonster = HCaptchaTask(data['capmonster_apikey'])
+	capmonster.set_user_agent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) discord/0.0.16 Chrome/91.0.4472.164 Electron/13.4.0 Safari/537.36")
+	task_id = capmonster.create_task(url, key, is_invisible=True)
+	result = capmonster.join_task_result(task_id)
+	response = result.get("gRecaptchaResponse")
+	dateTimeObj = datetime.datetime.now()
+	timestampStr = dateTimeObj.strftime("%H:%M:%S")
+	print(f"[{timestampStr}] [CAPTCHA SOLVED] ({response[-32:]}) ({token[:36]}*****)")
+	return response	         
+
 def hack_load_banner(inviter, serverid, token):
     try:
         headers = {
@@ -115,15 +126,15 @@ def hack_load_banner(inviter, serverid, token):
         }
         response = requests.get(f"https://discord.com/api/v9/guilds/{serverid}/member-verification?with_guild=false&invite_code={inviter}", headers=headers, proxies=lines)
         next_data = response.json()
-        # next_data["form_fields"][0]["response"] = True
+        next_data["form_fields"][0]["response"] = True
         a = requests.put('https://discord.com/api/v9/guilds/' + serverid + '/requests/@me', json=next_data, headers=headers, proxies=lines)
         if a.status_code == 201:
-            print('[+] Обошёл баннер сервера ' + serverid + '! [' + token[:36] + '*****]')
+            print('[+] Обошёл баннер сервера' + serverid + '! [' + token + ']')
         else:
-            print(f"[-] Дискорд забанил твой айпи. Юзай ВПН. Ошибка: {a.text}" + ' [' + token[:36] + '*****]')
+            print(f"[-] Дискорд забанил твой айпи. Юзай ВПН. Ошибка: {a.text}" + ' [' + token + ']')
     except Exception as e:
         try:
-            print("[-] Cloudfare забанил твой айпи. Юзай ВПН. Ошибка: " + {str(e)} + ' [' + token[:36] + '*****]')
+            print("[-] Cloudfare забанил твой айпи. Юзай ВПН. Ошибка: " + {str(e)} + ' [' + token + ']')
         finally:
             e = None
             del e
@@ -138,23 +149,33 @@ def join(invite, token):
         headers['referer'] = "https://discordapp.com/api/v9/invites/" + str(invite)
         response4 = requests.post(('https://discordapp.com/api/v9/invites/' + invite), headers=headers, json=js.dumps(jsoner), cookies=request_cookie(), proxies=lines)
         if response4.status_code == 200:
-            print('[+] Зашёл на сервер ' + invite + '! [' + token[:36] + '*****]')
+            print('[+] Зашёл на сервер ' + invite + '! [' + token[:36] + ']')
             if data["loadbanner"] == "true":
                 print('Обхожу баннер сервера!')
                 hack_load_banner(inviter, data['server_id'], token)
         elif response4.status_code == 403:
             print(f'Ошибка 403 ({token[:36]}*****)')
         elif response4.status_code == 400:
-            print(f"[CAPTCHA] ({token[:36]}*****)")
-            print(response4.text)
-            #json2 = {'captcha_key': captcha_bypass(token, "https://discord.com", f"{response4.json()['captcha_sitekey']}"), 'nonce': snakeflow, 'tts': "false"}
-            json2 = {'captcha_key': captcha_bypass(token, "https://discord.com", f"{response4.json()['captcha_sitekey']}", response4.json()['captcha_rqdata']), 'captcha_rqtoken': response4.json()['captcha_rqtoken'], 'nonce': snakeflow, 'tts': "false"}
-            response5 = requests.post("https://discordapp.com/api/v9/invites/" + str(invite), headers=headers, cookies=request_cookie(), json=js.dumps(json2), proxies=lines, timeout=20)
-            if response5.status_code == 200:
-                print(f'Успешно ({token[:36]}*****)')
-                if data["loadbanner"] == "true":
-                    print('Обхожу баннер сервера!')
-                    hack_load_banner(inviter, data['server_id'], token)
+            if "captcha_rqdata" in response4.text:
+                print(f"[CAPTCHA] ({token[:36]}*****)")
+                json2 = {'captcha_key': captcha_bypass(token, "https://discord.com", f"{response4.json()['captcha_sitekey']}", response4.json()['captcha_rqdata']), 'captcha_rqtoken': response4.json()['captcha_rqtoken'], 'nonce': snakeflow, 'tts': "false"}
+                response5 = requests.post("https://discordapp.com/api/v9/invites/" + str(invite), headers=headers, cookies=request_cookie(), json=js.dumps(json2), proxies=lines, timeout=20)
+                if response5.status_code == 200:
+                    print(f'Успешно ({token[:36]}*****)')
+                    if data["loadbanner"] == "true":
+                        print('Обхожу баннер сервера!')
+                        hack_load_banner(inviter, data['server_id'], token)
+                elif response5.status_code == 403:
+                    print(f'Ошибка 403 ({token[:36]}*****)')
+            else:
+                print(f"[CAPTCHA] ({token[:36]}*****)")
+                json2 = {'captcha_key': captcha_bypass2(token, "https://discord.com", f"{response4.json()['captcha_sitekey']}"), 'nonce': snakeflow, 'tts': "false"}
+                response5 = requests.post("https://discordapp.com/api/v9/invites/" + str(invite), headers=headers, cookies=request_cookie(), json=js.dumps(json2), proxies=lines, timeout=20)
+                if response5.status_code == 200:
+                    print(f'Успешно ({token[:36]}*****)')
+                    if data["loadbanner"] == "true":
+                        print('Обхожу баннер сервера!')
+                        hack_load_banner(inviter, data['server_id'], token)
                 elif response5.status_code == 403:
                     print(f'Ошибка 403 ({token[:36]}*****)')
         else:
