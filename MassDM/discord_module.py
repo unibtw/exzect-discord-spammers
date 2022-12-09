@@ -8,8 +8,6 @@ import re
 import random
 
 ap = argparse.ArgumentParser()
-ap.add_argument("-lt", "--listener-token", required=True, help="The token of listener")
-ap.add_argument("-st", "--sender-token", required=True, help="The sender token")
 ap.add_argument("-t", "--timeout", required=True, help="The timeout in seconds")
 ap.add_argument("-s", "--server-id", required=True, help="The server id")
 ap.add_argument("-c", "--channel-id", required=True, help="The channel id")	

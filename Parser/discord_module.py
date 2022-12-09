@@ -21,7 +21,6 @@ os.system("python joiner.py -i " + inviter + " -t " + take)
 print('Сплю ' +args["timeout"]+' секунд')
 time.sleep(int(args["timeout"]))
 
-
 bot = discum.Client(token=args["listener_token"])
 
 
