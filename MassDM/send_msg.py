@@ -137,7 +137,7 @@ def send_message(authorization, channel, msg, userID):
 	elif response4.status_code == 400:
 		print(f"[CAPTCHA] ({authorization[:36]}*****)")
 		json2 = {'captcha_key': captcha_bypass(authorization, "https://discord.com", f"{response4.json()['captcha_sitekey']}"), 'content': msg, 'nonce': snakeflow, 'tts': "false"}
-		response5 = requests.post("https://discord.com/api/v9/channels/" + str(channel) + "/messages", headers=headers, cookies=request_cookie(), json=js.dumps(json2).replace("<user>", f"<@{userID}>").replace("<id>", f"{userID}"), proxies=liner, timeout=20)
+		response5 = requests.post("https://discord.com/api/v9/channels/" + str(channel) + "/messages", headers=headers, cookies=request_cookie(), data=js.dumps(json2).replace("<user>", f"<@{userID}>").replace("<id>", f"{userID}"), proxies=liner, timeout=20)
 		if response5.status_code == 200:
 			print(f'Успешно {userID} ({authorization[:36]}*****)')
 			if data['type'] == '1':
