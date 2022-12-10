@@ -126,6 +126,12 @@ def send_message(authorization, channel, msg, userID):
 	response4 = requests.post("https://discord.com/api/v9/channels/" + str(channel) + "/messages", headers=headers, cookies=request_cookie(), data=js.dumps(jsoner).replace("<user>", f"<@{userID}>").replace("<id>", f"{userID}"), proxies=liner, timeout=20)
 	if response4.status_code == 200:
 		print(f'Успешно {userID} ({authorization[:36]}*****)')
+		if data['type'] == '1':
+			with open('Users.txt', 'w') as f:
+				for line in userss:
+					result = pattern.search(line)
+					if result is None:
+						f.write(line) 
 	elif response4.status_code == 403:
 		print(f'ЛС Закрыт {userID} ({authorization[:36]}*****)')
 	elif response4.status_code == 400:
@@ -134,16 +140,15 @@ def send_message(authorization, channel, msg, userID):
 		response5 = requests.post("https://discord.com/api/v9/channels/" + str(channel) + "/messages", headers=headers, cookies=request_cookie(), json=js.dumps(json2).replace("<user>", f"<@{userID}>").replace("<id>", f"{userID}"), proxies=liner, timeout=20)
 		if response5.status_code == 200:
 			print(f'Успешно {userID} ({authorization[:36]}*****)')
+			if data['type'] == '1':
+				with open('Users.txt', 'w') as f:
+					for line in userss:
+						result = pattern.search(line)
+						if result is None:
+							f.write(line) 
 		elif response5.status_code == 403:
 			print(f'ЛС Закрыт {userID} ({authorization[:36]}*****)')
 	else:
 		print(f"[{timestampStr}] [ERROR] {userID} ({authorization[:36]}*****) ({response4.text})")
 
-send_message(tokener, channel, text_to_send, idder)		
-
-if data['type'] == '1':
-	with open('Users.txt', 'w') as f:
-		for line in userss:
-			result = pattern.search(line)
-			if result is None:
-				f.write(line) 
+send_message(tokener, channel, text_to_send, idder)

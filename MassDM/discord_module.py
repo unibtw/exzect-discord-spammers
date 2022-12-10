@@ -68,8 +68,9 @@ take = give_token()
 
 # guild parser 
 while count == oldcount:
-	with open("Users.txt", "r") as mab:
-		userw = json.load(mab)
+	if data['type'] == '2':
+		with open("Users.txt", "r") as mab:
+			userw = json.load(mab)
 	with open("Users.txt", "r") as r_f:
 		userss1 = r_f.readlines()
 	if not userss1:
