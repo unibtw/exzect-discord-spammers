@@ -87,8 +87,12 @@ def open_channel(authorization, userID):
 	headers['authorization'] = authorization
 	headers['x-context-properties'] = "e30="
 	response3 = requests.post("https://discord.com/api/v9/users/@me/channels", headers=headers, cookies=request_cookie(), json=json_data, proxies=liner).json()
-	print('Открыл лс с ' + userID)
-	channel = response3["id"]
+	if 'message' in response3:
+		if response3['message'] == '401: Unauthorized':
+			channel = 'null'
+	else:
+		print('Открыл лс с ' + userID)
+		channel = response3["id"]
 	return channel
 
 def request_snowflake():
@@ -151,4 +155,7 @@ def send_message(authorization, channel, msg, userID):
 	else:
 		print(f"[{timestampStr}] [ERROR] {userID} ({authorization[:36]}*****) ({response4.text})")
 
-send_message(tokener, channel, text_to_send, idder)
+if channel != 'null':
+	send_message(tokener, channel, text_to_send, idder)
+elif channel == 'null':
+	print('Аккаунт в бане, удалите его из tokens.txt')
