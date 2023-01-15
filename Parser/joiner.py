@@ -44,13 +44,13 @@ headers_reg = {
     "sec-fetch-site": "same-origin"
 }
 
-with open ('proxy.txt', 'r') as file:
-    lines = file.readlines()
-    proxer = random.choice(lines)
+# with open ('proxy.txt', 'r') as file:
+#     lines = file.readlines()
+#     proxer = random.choice(lines)
 
-proxies = {
-    'http': proxer
-}
+# proxies = {
+#     'http': proxer
+# }
 
 with open(os.path.join("config.json"), "r", encoding="utf8") as r_f:
     data = json.loads(r_f.read())
@@ -124,17 +124,17 @@ def captcha_bypass(url, key):
 def join(invite_code, token):
 		headers["authorization"] = token
 		headers["x-fingerprint"] = request_fingerprint()
-		response = requests.post(f"https://discord.com/api/v9/invites/{invite_code}", headers=headers, cookies=request_cookie(), proxies=proxies, timeout=20)
+		response = requests.post(f"https://discord.com/api/v9/invites/{invite_code}", headers=headers, cookies=request_cookie(),  timeout=20)
 		if response.status_code == 400:
 			print(f"[!] Captcha {token[:50]}****** обнаружена! Решаю.. ({response.json()['captcha_sitekey']})")
-			response_captcha = requests.post(f"https://discord.com/api/v9/invites/{invite_code}", json={"captcha_key": captcha_bypass("https://discord.com", f"{response.json()['captcha_sitekey']}")}, headers=headers, cookies=request_cookie(), proxies=proxies, timeout=20)
+			response_captcha = requests.post(f"https://discord.com/api/v9/invites/{invite_code}", json={"captcha_key": captcha_bypass("https://discord.com", f"{response.json()['captcha_sitekey']}")}, headers=headers, cookies=request_cookie(),  timeout=20)
 			if response_captcha.status_code == 200:
 				print(f"[+] {token[:50]}****** зашёл на сервер! ({invite_code})")
 				body = response_captcha.json()
 				guild_id = body['guild']['id']
 				if 'show_verification_form' in body:
-					get_rules = requests.get(f"https://discord.com/api/v9/guilds/{guild_id}/member-verification?with_guild=false", headers=headers, cookies=request_cookie(), proxies=proxies, timeout=20).json()
-					response2 = requests.put(f"https://discord.com/api/v9/guilds/{guild_id}/requests/@me", headers=headers, cookies=request_cookie(), json=get_rules, proxies=proxies, timeout=20)
+					get_rules = requests.get(f"https://discord.com/api/v9/guilds/{guild_id}/member-verification?with_guild=false", headers=headers, cookies=request_cookie(),  timeout=20).json()
+					response2 = requests.put(f"https://discord.com/api/v9/guilds/{guild_id}/requests/@me", headers=headers, cookies=request_cookie(), json=get_rules,  timeout=20)
 					if response2.status_code == 201 or response2.status_code == 204:
 						print(f"[+] {token[:50]}****** принял правила сервера!")
 					else:
@@ -145,8 +145,8 @@ def join(invite_code, token):
 			body = response.json()
 			guild_id = body['guild']['id']
 			if 'show_verification_form' in body:
-				get_rules = requests.get(f"https://discord.com/api/v9/guilds/{guild_id}/member-verification?with_guild=false", headers=headers, cookies=request_cookie(), proxies=proxies, timeout=20).json()
-				response2 = requests.put(f"https://discord.com/api/v9/guilds/{guild_id}/requests/@me", headers=headers, cookies=request_cookie(), json=get_rules, proxies=proxies, timeout=20)
+				get_rules = requests.get(f"https://discord.com/api/v9/guilds/{guild_id}/member-verification?with_guild=false", headers=headers, cookies=request_cookie(),  timeout=20).json()
+				response2 = requests.put(f"https://discord.com/api/v9/guilds/{guild_id}/requests/@me", headers=headers, cookies=request_cookie(), json=get_rules,  timeout=20)
 				if response2.status_code == 201 or response2.status_code == 204:
 					print(f"[+] {token[:50]}****** принял правила сервера!")
 				else:

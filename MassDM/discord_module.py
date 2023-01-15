@@ -40,16 +40,14 @@ def give_token():
 
 take = give_token()
 print('Захожу на сервер!')
-os.system("python joiner.py -i " + inviter + " -t " + take)
-print('Сплю ' +args["timeout"]+' секунд')
-time.sleep(int(args["timeout"]))
+os.system("python3 joiner.py -i " + inviter + " -t " + take)
 
-with open ('proxy.txt', 'r') as file:
-    lines = file.readlines()
-    proxer = random.choice(lines)
+# with open ('proxy.txt', 'r') as file:
+#     lines = file.readlines()
+#     proxer = random.choice(lines)
 
-proxyip = proxer.split(":")[0]
-proxyport = proxer.split(":")[1]
+# proxyip = proxer.split(":")[0]
+# proxyport = proxer.split(":")[1]
 
 take = give_token()
 # bot = discum.Client(token=take, proxy_host=proxyip, proxy_port=proxyport)
@@ -85,19 +83,17 @@ while count == oldcount:
 					userss = fp.readlines()
 					newuser2 = userss[g]
 				print('Взял пользователя ' + newuser2)
-				os.system(f"python send_msg.py -id {int(newuser2)} -t {take}")
-				print('Сплю ' +args["timeout"]+' секунд')
-				time.sleep(int(args["timeout"]))
+				os.system(f"python3 send_msg.py -id {int(newuser2)} -t {take}")
+				# print('Сплю ' +args["timeout"]+' секунд')
+				# time.sleep(int(args["timeout"]))
 			elif data['type'] == '2':
 				z.append(userw[g])
 				for lst in z[1:]:
 					n_sps=n_sps+lst[0]+lst[1]+lst[2]+lst[3]+lst[4]+lst[5]+lst[6]+lst[7]+lst[8]+lst[9]+lst[10]+lst[11]+lst[12]+lst[13]+lst[14]+lst[15]+lst[16]+lst[17]
 					print('Взял пользователя ' + n_sps)
-					os.system(f"python send_msg.py -id {n_sps} -t {take}")
+					os.system(f"python3 send_msg.py -id {n_sps} -t {take}")
 					n_sps = ""
 					z = ["0"]
-					print('Сплю ' +args["timeout"]+' секунд')
-					time.sleep(int(args["timeout"]))
 		print('Закончил отправлять сообщения пользователям!')
 		count+=1
 		if data['type'] == '2':
@@ -108,6 +104,4 @@ while count == oldcount:
 			oldcount +=1
 		take = give_token()
 		print('Захожу на сервер!')
-		os.system("python joiner.py -i " + inviter + " -t " + take)
-		print('Сплю ' +args["timeout"]+' секунд')
-		time.sleep(int(args["timeout"]))
+		os.system("python3 joiner.py -i " + inviter + " -t " + take)

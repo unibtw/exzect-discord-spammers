@@ -25,15 +25,15 @@ idder = args["indeficator"]
 with open("text.txt", "r", encoding="utf8") as r_f:
 	text_to_send = r_f.read()
 
-with open ('proxy.txt', 'r') as file:
-    lines = file.readlines()
-    proxer = random.choice(lines)
+# with open ('proxy.txt', 'r') as file:
+#     lines = file.readlines()
+#     proxer = random.choice(lines)
 
-proxyip = proxer.split(":")[0]
-proxyport = proxer.split(":")[1]
-liner = {
-    'http': proxer
-}
+# proxyip = proxer.split(":")[0]
+# proxyport = proxer.split(":")[1]
+# liner = {
+#     'http': proxer
+# }
 
 headers = {
 		"x-super-properties": "eyJvcyI6IldpbmRvd3MiLCJicm93c2VyIjoiRmlyZWZveCIsImRldmljZSI6IiIsInN5c3RlbV9sb2NhbGUiOiJlbi1VUyIsImJyb3dzZXJfdXNlcl9hZ2VudCI6Ik1vemlsbGEvNS4wIChXaW5kb3dzIE5UIDEwLjA7IFdpbjY0OyB4NjQ7IHJ2OjkzLjApIEdlY2tvLzIwMTAwMTAxIEZpcmVmb3gvOTMuMCIsImJyb3dzZXJfdmVyc2lvbiI6IjkzLjAiLCJvc192ZXJzaW9uIjoiMTAiLCJyZWZlcnJlciI6IiIsInJlZmVycmluZ19kb21haW4iOiIiLCJyZWZlcnJlcl9jdXJyZW50IjoiIiwicmVmZXJyaW5nX2RvbWFpbl9jdXJyZW50IjoiIiwicmVsZWFzZV9jaGFubmVsIjoic3RhYmxlIiwiY2xpZW50X2J1aWxkX251bWJlciI6MTAwODA0LCJjbGllbnRfZXZlbnRfc291cmNlIjpudWxsfQ==",
@@ -68,7 +68,7 @@ headers_reg = {
 	}
 
 def request_cookie():
-	response1 = requests.get("https://discord.com", proxies=liner)
+	response1 = requests.get("https://discord.com", )
 	cookie = response1.cookies.get_dict()
 	cookie['locale'] = "us"
 	return cookie
@@ -77,7 +77,7 @@ with open('Users.txt') as fp:
 	userss = fp.readlines()
 
 def request_fingerprint():
-	response2 = requests.get("https://discordapp.com/api/v9/experiments", headers=headers_reg, proxies=liner).json()
+	response2 = requests.get("https://discordapp.com/api/v9/experiments", headers=headers_reg, ).json()
 	fingerprint = response2["fingerprint"]
 	return fingerprint
 
@@ -86,7 +86,7 @@ def open_channel(authorization, userID):
 	headers['x-fingerprint'] = request_fingerprint()
 	headers['authorization'] = authorization
 	headers['x-context-properties'] = "e30="
-	response3 = requests.post("https://discord.com/api/v9/users/@me/channels", headers=headers, cookies=request_cookie(), json=json_data, proxies=liner).json()
+	response3 = requests.post("https://discord.com/api/v9/users/@me/channels", headers=headers, cookies=request_cookie(), json=json_data, ).json()
 	if 'message' in response3:
 		if response3['message'] == '401: Unauthorized':
 			channel = 'null'
@@ -127,7 +127,7 @@ def send_message(authorization, channel, msg, userID):
 	headers['x-fingerprint'] = request_fingerprint()
 	headers['authorization'] = authorization
 	headers['referer'] = "https://discord.com/channels/@me/" + str(channel)
-	response4 = requests.post("https://discord.com/api/v9/channels/" + str(channel) + "/messages", headers=headers, cookies=request_cookie(), data=js.dumps(jsoner).replace("<user>", f"<@{userID}>").replace("<id>", f"{userID}"), proxies=liner, timeout=20)
+	response4 = requests.post("https://discord.com/api/v9/channels/" + str(channel) + "/messages", headers=headers, cookies=request_cookie(), data=js.dumps(jsoner).replace("<user>", f"<@{userID}>").replace("<id>", f"{userID}"), timeout=20)
 	if response4.status_code == 200:
 		print(f'Успешно {userID} ({authorization[:36]}*****)')
 		if data['type'] == '1':
@@ -141,7 +141,7 @@ def send_message(authorization, channel, msg, userID):
 	elif response4.status_code == 400:
 		print(f"[CAPTCHA] ({authorization[:36]}*****)")
 		json2 = {'captcha_key': captcha_bypass(authorization, "https://discord.com", f"{response4.json()['captcha_sitekey']}"), 'content': msg, 'nonce': snakeflow, 'tts': "false"}
-		response5 = requests.post("https://discord.com/api/v9/channels/" + str(channel) + "/messages", headers=headers, cookies=request_cookie(), data=js.dumps(json2).replace("<user>", f"<@{userID}>").replace("<id>", f"{userID}"), proxies=liner, timeout=20)
+		response5 = requests.post("https://discord.com/api/v9/channels/" + str(channel) + "/messages", headers=headers, cookies=request_cookie(), json=js.dumps(json2).replace("<user>", f"<@{userID}>").replace("<id>", f"{userID}"), timeout=20)
 		if response5.status_code == 200:
 			print(f'Успешно {userID} ({authorization[:36]}*****)')
 			if data['type'] == '1':
@@ -152,6 +152,8 @@ def send_message(authorization, channel, msg, userID):
 							f.write(line) 
 		elif response5.status_code == 403:
 			print(f'ЛС Закрыт {userID} ({authorization[:36]}*****)')
+		elif response5.status_code == 400:
+			print('Не прошел')
 	else:
 		print(f"[{timestampStr}] [ERROR] {userID} ({authorization[:36]}*****) ({response4.text})")
 

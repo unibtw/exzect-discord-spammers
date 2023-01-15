@@ -17,9 +17,8 @@ inviter = args['invite']
 take = args['listener_token']
 
 print('Захожу на сервер!')
-os.system("python joiner.py -i " + inviter + " -t " + take)
-print('Сплю ' +args["timeout"]+' секунд')
-time.sleep(int(args["timeout"]))
+os.system("python3 joiner.py -i " + inviter + " -t " + take)
+
 
 bot = discum.Client(token=args["listener_token"])
 

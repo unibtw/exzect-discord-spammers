@@ -47,7 +47,7 @@ while True:
 			else:
 				print("Новый челик")
 				print(member)
-				os.system("python send_msg.py -t " + args["sender_token"] + " -id " + str(member))
+				os.system("python3 send_msg.py -t " + args["sender_token"] + " -id " + str(member))
 				time.sleep(10)		
 			with open("Users.txt", "w") as w_f:
 				json.dump(members, w_f)

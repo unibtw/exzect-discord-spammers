@@ -10,7 +10,7 @@ console = Console()
 
 def starter(data,path):
 	os.chdir(path)
-	os.system("python discord_module.py -lt " + data["token_l"] + " -st " + data["token_s"] + " -t " + str(data["timeout"]) + " -s " + data["server_id"] + " -c " + data["channel_id"])
+	os.system("python3 discord_module.py -lt " + data["token_l"] + " -st " + data["token_s"] + " -t " + str(data["timeout"]) + " -s " + data["server_id"] + " -c " + data["channel_id"])
 	print("Запустил!")
 
 def start_all():
